@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const ws = new WebSocket("ws://127.0.0.1:8000/ws"); // WebSocket endpoint
   const ctx = document.getElementById("chart").getContext("2d");
   const chart = new Chart(ctx, {
     type: "line",
@@ -38,6 +37,59 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     },
   });
+  SearchByDateForm = document.getElementById("search_by_date_form");
+  SearchByDateForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    params = {};
+    start_timestamp = pythonDatetimeString(
+      document.getElementById("start_date").value
+    );
+    end_timestamp = pythonDatetimeString(
+      document.getElementById("end_date").value
+    );
+
+    if (start_timestamp != null) {
+      params["start"] = start_timestamp;
+    }
+    if (end_timestamp != null) {
+      params["end"] = end_timestamp;
+    }
+
+    console.log("her");
+    axios
+      .get("http://127.0.0.1:8000/filter_data/", {
+        params: params,
+      })
+      .then((response) => {
+        console.log("successfully");
+      })
+      .catch((error) => {
+        console.log("error");
+      });
+  });
+
+  function pythonDatetimeString(datetime) {
+    console.log(datetime);
+    if (datetime === "") {
+      return null;
+    }
+    let jsDate = new Date(datetime);
+    let pythonDatetimeString =
+      jsDate.getFullYear() +
+      "-" +
+      ("0" + (jsDate.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + jsDate.getDate()).slice(-2) +
+      " " +
+      ("0" + jsDate.getHours()).slice(-2) +
+      ":" +
+      ("0" + jsDate.getMinutes()).slice(-2) +
+      ":" +
+      ("0" + jsDate.getSeconds()).slice(-2);
+    return pythonDatetimeString;
+  }
+  const ws = new WebSocket("ws://127.0.0.1:8000/ws"); // WebSocket endpoint
 
   ws.onopen = () => {
     console.log("Connected to the server");
@@ -54,6 +106,22 @@ document.addEventListener("DOMContentLoaded", () => {
       chart.update();
     }
 
+    if (response.type === "filter_data") {
+      console.log("filter data");
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+        dataset.labels = [];
+      });
+      chart.data.labels = [];
+      chart.update();
+
+      for (const data of response.data) {
+        chart.data.labels.push(data.timestamp);
+        chart.data.datasets[0].data.push(data.temperature);
+        chart.data.datasets[1].data.push(data.humidity);
+      }
+      chart.update();
+    }
     if (response.type === "live_data") {
       data = response.data;
       chart.data.labels.push(data.timestamp);

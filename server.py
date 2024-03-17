@@ -1,11 +1,25 @@
 from fastapi import FastAPI, Query, WebSocket , WebSocketDisconnect
 from sqlalchemy import create_engine, Column, Integer, Float, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
-from datetime import datetime
+from datetime import datetime, date
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+
+origins = [
+"http://127.0.0.1:5500"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 WebSocket_connection = []
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./database.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 Base = declarative_base()
 
@@ -44,7 +58,30 @@ async def add_data(temperature: float = Query(...), humidity: float = Query(...)
     add_data_to_db(temperature, humidity)
     return {"message": "Data added successfully"}
 
+# filter_data based on the date
 
+@app.get("/filter_data/")
+async def filter_data(start: datetime | None = None, end: datetime | None = None):
+    print(start, end)
+    db = SessionLocal()
+    db_data = []
+    if start is not None and end is not None:
+         db_data = db.query(Data).filter(Data.timestamp >= start, Data.timestamp <= end).all()
+    elif start is None and end :
+        db_data = db.query(Data).filter(Data.timestamp <= end).all()
+    elif start is not None and end is None:
+        db_data = db.query(Data).filter(Data.timestamp >= start).all()
+    else:
+        db_data = db.query(Data).all()
+
+    for websocket in WebSocket_connection:
+        data = [{"temperature": data.temperature, "humidity": data.humidity, "timestamp": data.timestamp.strftime("%Y-%m-%d %H:%M:%S")} for data in db_data]
+
+        await websocket.send_json({
+            "type": "filter_data",
+            "data": data
+        })
+    return {"message": "Data filtered successfully"}
 
 # WebSocket endpoint to provide real-time data updates
 @app.websocket("/ws")

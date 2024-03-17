@@ -6,9 +6,22 @@
     <title>Temperature and Humidity Chart</title>
     <!-- Include Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"
+      integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
   </head>
   <body>
     <h1>Temperature and Humidity Chart</h1>
+    <form id="search_by_date_form">
+      <!-- <input type="datetime-local" id="start_date" value="2024-03-16T07:47" /> -->
+      <!-- <input type="datetime-local" id="end_date" value="2024-03-17T23:47" /> -->
+      <input type="datetime-local" id="start_date" />
+      <input type="datetime-local" id="end_date" />
+      <input type="submit" value="Submit" />
+    </form>
     <div style="width: 80%">
       <canvas id="chart"></canvas>
     </div>
