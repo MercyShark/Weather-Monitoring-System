@@ -9,12 +9,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          path: backend
       - name: Install dependencies
-        run: |
-          cd backend
-          ls
-          pip install -r requirements.txt
+        run: pip install -r backend/requirements.txt
       - name: Run application
-        run: python main.py
+        run: python backend/main.py
