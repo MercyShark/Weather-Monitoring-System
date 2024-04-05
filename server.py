@@ -3,6 +3,8 @@ from sqlalchemy import create_engine, Column, Integer, Float, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
 from datetime import datetime, date
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
 app = FastAPI()
 
 origins = [
@@ -55,7 +57,7 @@ async def add_data(temperature: float = Query(...), humidity: float = Query(...)
             "type": "live_data",
             "data": data
         })
-    add_data_to_db(temperature, humidity)
+    # add_data_to_db(temperature, humidity)
     return {"message": "Data added successfully"}
 
 # filter_data based on the date
@@ -108,5 +110,4 @@ async def websocket_endpoint(websocket: WebSocket):
         WebSocket_connection.remove(websocket)
 
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)        
