@@ -13,4 +13,4 @@ jobs:
       - name: Install dependencies
         run: pip install -r backend/requirements.txt
       - name: Run application
-        run: python backend/main.py
+        run: python backend/server.py
