@@ -1,0 +1,17 @@
+name: server workflow
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          path: backend
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Run Application
+        run: python main.py
