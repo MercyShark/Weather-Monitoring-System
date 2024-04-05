@@ -12,6 +12,7 @@ jobs:
         with:
           path: backend
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt
-      - name: Run Application
-        run: python main.py
+        run: ls
+    #     run: pip install -r requirements.txt
+    #   - name: Run Application
+    #     run: python main.py
