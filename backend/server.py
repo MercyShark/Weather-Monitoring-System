@@ -57,7 +57,7 @@ async def add_data(temperature: float = Query(...), humidity: float = Query(...)
             "type": "live_data",
             "data": data
         })
-    # add_data_to_db(temperature, humidity)
+    add_data_to_db(temperature, humidity)
     return {"message": "Data added successfully"}
 
 # filter_data based on the date
