@@ -27,6 +27,13 @@ The Weather Monitoring System is a project designed to collect weather data, sto
 - Access the frontend web interface to view weather data visualizations.
 - Configure the NodeMCU device to send weather data to the backend API at regular intervals.
 
+## Dashboard:
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+
+## Hardware:
+![alt text](<WhatsApp Image 2024-05-18 at 12.08.56 AM.jpeg>)
 ## Contributors
 - [Rishabh Prajapati](https://github.com/MercyShark)
 
